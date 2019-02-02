@@ -19,12 +19,15 @@ void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
 
+	OpenDoor();
+}
+
+void UOpenDoor::OpenDoor()
+{
 	FRotator NewRotation = GetOwner()->GetActorRotation();
 	NewRotation.Add(0.f, -70.f, 0.f);
 
 	GetOwner()->SetActorRotation(NewRotation);
-
-	UE_LOG(LogTemp, Warning, TEXT("Rolling door"));
 }
 
 
