@@ -53,5 +53,19 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		0.f,
 		10.f
 	);
+
+	FCollisionQueryParams TraceParameters(FName(TEXT("")), false, GetOwner());
+
+	FHitResult LineTraceHit;
+	GetWorld()->LineTraceSingleByObjectType(
+		LineTraceHit,
+		Position,
+		LineTraceEnd,
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParameters
+	);
+
+	if (LineTraceHit.GetActor() != NULL)
+		UE_LOG(LogTemp, Warning, TEXT("Found %s"), *LineTraceHit.GetActor()->GetName());
 }
 
