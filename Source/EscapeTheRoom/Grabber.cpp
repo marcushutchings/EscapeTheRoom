@@ -46,12 +46,34 @@ void UGrabber::FindPhysicsHandle()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	{
+		FVector Position;
+		FRotator ViewDirection;
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
+		FVector LineTraceEnd = Position + ViewDirection.Vector() * Reach;
+
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
 }
 
 void UGrabber::Grab() {
 	UE_LOG(LogTemp, Warning, TEXT("Grabbed"));
 
-	GetFirstPhysicsBodyInReach();
+	auto HitResult = GetFirstPhysicsBodyInReach();
+
+	if (HitResult.GetActor() != NULL)
+	{
+		auto ComponentToGrab = HitResult.GetComponent();
+
+		PhysicsHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			HitResult.GetActor()->GetActorLocation(),
+			true
+		);
+	}
 }
 
 FHitResult UGrabber::GetFirstPhysicsBodyInReach()
@@ -92,4 +114,9 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 
 void UGrabber::GrabReleased() {
 	UE_LOG(LogTemp, Warning, TEXT("Grabbed Released"));
+
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	{
+		PhysicsHandle->ReleaseComponent();
+	}
 }
