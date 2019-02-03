@@ -22,7 +22,7 @@ void UPositionReporter::BeginPlay()
 
 	FString OwnerName = GetOwner()->GetName();
 	FString ObjectPos = GetOwner()->GetActorLocation().ToString();
-	UE_LOG(LogTemp, Warning, TEXT(" %s is at %s"), *OwnerName, *ObjectPos);
+	UE_LOG(LogTemp, Warning, TEXT("%s is at %s"), *OwnerName, *ObjectPos);
 	
 }
 

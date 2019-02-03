@@ -27,12 +27,13 @@ void UOpenDoor::OpenDoor()
 {
 	if (!IsOpen)
 	{
-		FRotator NewRotation = GetOwner()->GetActorRotation();
-		NewRotation.Add(0.f, -70.f, 0.f);
+		FRotator NewRotation = GetOwner()->GetActorRotation().Add(0.f, -OpenAngle, 0.f);
 
 		GetOwner()->SetActorRotation(NewRotation);
 		IsOpen = true;
 	}
+
+	DoorLastOpenTimeSeconds = GetWorld()->GetTimeSeconds();
 }
 
 
@@ -45,5 +46,23 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 		if (PressurePlate != NULL)
 			if (PressurePlate->IsOverlappingActor(ActorThatOpens))
 				OpenDoor();
+			else
+			{
+				float CurrenttimeInSeconds = GetWorld()->GetTimeSeconds();
+				bool ShouldCloseDoor = CurrenttimeInSeconds > DoorLastOpenTimeSeconds + DoorCloseDelaySeconds;
+				if (ShouldCloseDoor)
+					CloseDoor();
+			}
+}
+
+void UOpenDoor::CloseDoor()
+{
+	if (IsOpen)
+	{
+		FRotator NewRotation = GetOwner()->GetActorRotation().Add(0.f, OpenAngle, 0.f);
+
+		GetOwner()->SetActorRotation(NewRotation);
+		IsOpen = false;
+	}
 }
 
