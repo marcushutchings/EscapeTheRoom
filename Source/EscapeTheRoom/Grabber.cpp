@@ -28,7 +28,7 @@ void UGrabber::BeginPlay()
 void UGrabber::FindPlayerInput()
 {
 	PlayerInput = GetOwner()->FindComponentByClass<UInputComponent>();
-	if (PlayerInput)
+	if (PlayerInput != nullptr)
 	{
 		PlayerInput->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
 		PlayerInput->BindAction("Grab", IE_Released, this, &UGrabber::GrabReleased);
@@ -40,8 +40,8 @@ void UGrabber::FindPlayerInput()
 void UGrabber::FindPhysicsHandle()
 {
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
-	if (!PhysicsHandle)
-		UE_LOG(LogTemp, Error, TEXT("No Phsycis Handle attached to %s"), *GetOwner()->GetName());
+	if (PhysicsHandle==nullptr)
+		UE_LOG(LogTemp, Error, TEXT("No Physics Handle attached to %s"), *GetOwner()->GetName());
 }
 
 
@@ -61,7 +61,7 @@ void UGrabber::Grab() {
 
 	auto HitResult = GetFirstPhysicsBodyInReach();
 
-	if (HitResult.GetActor() != NULL)
+	if (HitResult.GetActor() != nullptr && PhysicsHandle != nullptr)
 	{
 		auto ComponentToGrab = HitResult.GetComponent();
 
@@ -99,7 +99,7 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 		TraceParameters
 	);
 
-	if (LineTraceHit.GetActor() != NULL)
+	if (LineTraceHit.GetActor() != nullptr)
 		UE_LOG(LogTemp, Warning, TEXT("Found %s"), *LineTraceHit.GetActor()->GetName());
 
 	return LineTraceHit;
@@ -107,7 +107,7 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 
 void UGrabber::GrabReleased()
 {
-	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	if (PhysicsHandle != nullptr && PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->ReleaseComponent();
 		PhysicsObjectGrabbed = false;

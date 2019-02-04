@@ -22,6 +22,10 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	//ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!PressurePlate)
+	{
+		UE_LOG(LogTemp, Error, TEXT("No Pressure Plate attached to %s"), *GetOwner()->GetName());
+	}
 }
 
 void UOpenDoor::OpenDoor()
@@ -44,7 +48,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 
-		if (PressurePlate != NULL)
+		if (PressurePlate != nullptr)
 			//if (PressurePlate->IsOverlappingActor(ActorThatOpens))
 			if (GetTotalmassOfActorsOnPlate() > 30.f) // TODO make into parameter
 				OpenDoor();
@@ -78,7 +82,7 @@ float UOpenDoor::GetTotalmassOfActorsOnPlate()
 	for (const auto& OverlappingActor : OverlappingActors)
 	{
 		const auto PrimitiveComponent = OverlappingActor->FindComponentByClass<UPrimitiveComponent>();
-		if (PrimitiveComponent) {
+		if (PrimitiveComponent != nullptr) {
 			TotalMass += PrimitiveComponent->GetMass();
 			//UE_LOG(LogTemp, Warning, TEXT("Found %s weighing %f"), *OverlappingActor->GetName(), PrimitiveComponent->GetMass());
 		}
