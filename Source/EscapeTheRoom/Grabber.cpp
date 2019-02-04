@@ -5,6 +5,8 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/PlayerController.h"
 
+#define OUT
+
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
@@ -69,7 +71,6 @@ void UGrabber::Grab() {
 			HitResult.GetActor()->GetActorLocation(),
 			true
 		);
-
 		PhysicsObjectGrabbed = true;
 	}
 }
@@ -104,9 +105,8 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	return LineTraceHit;
 }
 
-void UGrabber::GrabReleased() {
-	UE_LOG(LogTemp, Warning, TEXT("Grabbed Released"));
-
+void UGrabber::GrabReleased()
+{
 	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->ReleaseComponent();
@@ -118,7 +118,7 @@ FVector UGrabber::GetGrabReachStart()
 {
 	FVector Position;
 	FRotator ViewDirection;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT Position, OUT ViewDirection);
 	return Position;
 }
 
@@ -126,6 +126,6 @@ FVector UGrabber::GetGrabReachEnd()
 {
 	FVector Position;
 	FRotator ViewDirection;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT Position, OUT ViewDirection);
 	return Position + ViewDirection.Vector() * Reach;
 }

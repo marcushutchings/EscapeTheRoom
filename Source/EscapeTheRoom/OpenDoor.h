@@ -43,7 +43,6 @@ private:
 		float DoorCloseDelaySeconds = 1.f;
 
 	float DoorLastOpenTimeSeconds = 0.f;
-	
-	//UPROPERTY(EditAnywhere)
-		AActor* ActorThatOpens;
+
+	float GetTotalmassOfActorsOnPlate();
 };
