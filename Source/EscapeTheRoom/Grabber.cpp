@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
+#include "GameFramework/PlayerController.h"
 
 // Sets default values for this component's properties
 UGrabber::UGrabber()
@@ -47,14 +48,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
+	if (PhysicsObjectGrabbed)
 	{
-		FVector Position;
-		FRotator ViewDirection;
-		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
-		FVector LineTraceEnd = Position + ViewDirection.Vector() * Reach;
-
-		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+		PhysicsHandle->SetTargetLocation(GetGrabReachEnd());
 	}
 }
 
@@ -73,17 +69,13 @@ void UGrabber::Grab() {
 			HitResult.GetActor()->GetActorLocation(),
 			true
 		);
+
+		PhysicsObjectGrabbed = true;
 	}
 }
 
 FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	FVector Position;
-	FRotator ViewDirection;
-
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
-	FVector LineTraceEnd = Position + ViewDirection.Vector() * Reach;
-
 	//DrawDebugLine(
 	//	GetWorld(),
 	//	Position,
@@ -100,8 +92,8 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 	FHitResult LineTraceHit;
 	GetWorld()->LineTraceSingleByObjectType(
 		LineTraceHit,
-		Position,
-		LineTraceEnd,
+		GetGrabReachStart(),
+		GetGrabReachEnd(),
 		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
 		TraceParameters
 	);
@@ -118,5 +110,22 @@ void UGrabber::GrabReleased() {
 	if (PhysicsHandle && PhysicsHandle->GrabbedComponent)
 	{
 		PhysicsHandle->ReleaseComponent();
+		PhysicsObjectGrabbed = false;
 	}
+}
+
+FVector UGrabber::GetGrabReachStart()
+{
+	FVector Position;
+	FRotator ViewDirection;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
+	return Position;
+}
+
+FVector UGrabber::GetGrabReachEnd()
+{
+	FVector Position;
+	FRotator ViewDirection;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(Position, ViewDirection);
+	return Position + ViewDirection.Vector() * Reach;
 }

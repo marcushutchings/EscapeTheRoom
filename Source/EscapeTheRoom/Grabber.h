@@ -36,10 +36,12 @@ private:
 		float Reach = 120.f;
 
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
-	
 	UInputComponent* PlayerInput = nullptr;
+	bool PhysicsObjectGrabbed = false;
 
 	void Grab();
 	FHitResult GetFirstPhysicsBodyInReach();
 	void GrabReleased();
+	FVector GetGrabReachStart();
+	FVector GetGrabReachEnd();
 };
