@@ -32,9 +32,10 @@ void UOpenDoor::OpenDoor()
 {
 	if (!IsOpen)
 	{
-		FRotator NewRotation = GetOwner()->GetActorRotation().Add(0.f, -OpenAngle, 0.f);
+		//FRotator NewRotation = GetOwner()->GetActorRotation().Add(0.f, -OpenAngle, 0.f);
 
-		GetOwner()->SetActorRotation(NewRotation);
+		//GetOwner()->SetActorRotation(NewRotation);
+		OnOpenRequest.Broadcast();
 		IsOpen = true;
 	}
 
