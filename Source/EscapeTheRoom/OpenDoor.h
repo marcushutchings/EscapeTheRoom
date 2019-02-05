@@ -7,7 +7,7 @@
 #include "Engine/TriggerVolume.h"
 #include "OpenDoor.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnOpenRequest);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDoorEvent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class ESCAPETHEROOM_API UOpenDoor : public UActorComponent
@@ -31,12 +31,12 @@ public:
 	void CloseDoor();
 
 	UPROPERTY(BlueprintAssignable)
-		FOnOpenRequest OnOpenRequest;
+		FDoorEvent OnOpen;
+
+	UPROPERTY(BlueprintAssignable)
+		FDoorEvent OnClose;
 
 private:
-	UPROPERTY(EditAnywhere)
-		float OpenAngle = 70.f;
-
 	UPROPERTY(VisibleAnywhere)
 		bool IsOpen = false;
 
@@ -44,9 +44,7 @@ private:
 		ATriggerVolume* PressurePlate = nullptr;
 
 	UPROPERTY(EditAnywhere)
-		float DoorCloseDelaySeconds = 1.f;
-
-	float DoorLastOpenTimeSeconds = 0.f;
+		float TriggerMass = 30.f;
 
 	float GetTotalmassOfActorsOnPlate();
 };
